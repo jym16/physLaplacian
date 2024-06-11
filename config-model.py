@@ -2,6 +2,7 @@ import igraph as ig
 import matplotlib.pyplot as plt
 import multiprocessing as mp
 import numpy as np
+import pickle
 # from scipy.linalg import eigh
 from scipy.sparse import coo_array
 from scipy.sparse.linalg import eigsh
@@ -63,7 +64,7 @@ def physical_eigen_values(g, vols, which="leading"):
 
         return eigs[1],vecs[:,1]
 
-n_nodes = 10000
+n_nodes = 100000
 alpha = np.linspace(0., 2., 21)
 
 # k_avg = 3.
@@ -82,6 +83,7 @@ n_edges = int(k_avg * n_nodes / 2)
 # gamma = 3.
 
 for gamma in tqdm([2., 2.5, 3., 3.5, 4.]):
+# for gamma in tqdm([3.5]):
     g = ig.Graph.Static_Power_Law(
         n=n_nodes, m=n_edges, exponent_out=gamma
     )
@@ -139,3 +141,15 @@ for gamma in tqdm([2., 2.5, 3., 3.5, 4.]):
     fig.tight_layout()
     fig.savefig("./fig/config_N={:1.1e}_gamma={:1.1f}_localization.pdf".format(n_nodes, gamma))
     plt.close()
+    
+    data = {
+        "leading_eigs" : leading_eigs,
+        "leading_iprs" : leading_iprs,
+        "fiedler_eigs" : fiedler_eigs,
+        "fiedler_iprs" : fiedler_iprs,
+    }
+    
+    with open("./data/config_N={:1.1e}_gamma={:1.1f}_localization.pkl".format(n_nodes, gamma), "wb") as f:
+        pickle.dump(data, f)
+    
+    del leading_eigs, leading_iprs, fiedler_eigs, fiedler_iprs, data
