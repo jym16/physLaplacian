@@ -7,7 +7,7 @@ from scipy.sparse.linalg import eigsh
 import matplotlib.pyplot as plt
 import multiprocessing as mp
 import pickle
-from tqdm import tqdm
+# from tqdm import tqdm
 
 def inverse_participation_ratio(vec):
     """Calculate the inverse participation ratio of a vector.
